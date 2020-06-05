@@ -3,6 +3,7 @@ import { View, Platform } from 'react-native';
 import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Icon } from 'react-native-elements';
 import Home from './HomeComponent';
 import Menu from './MenuComponent';
 import Dishdetail from './DishdetailComponent';
@@ -49,6 +50,8 @@ const HomeNavigatorScreen = () => {
         <HomeNavigator.Navigator
             screenOptions={headerOptions}
         >
+            {/* this is the screen header name */}
+            {/* compoenent call */}
             <MenuNavigator.Screen
                 name="Home"
                 component={Home}
@@ -58,7 +61,6 @@ const HomeNavigatorScreen = () => {
 }
 
 // about stack
-
 const AboutNavigator = createStackNavigator();
 
 const AboutNavigatorScreen  = () => {
@@ -92,6 +94,7 @@ const ContactNavigatorScreen  = () => {
 }
 
 // drawer
+// whole navigation
 const MainNavigator = createDrawerNavigator();
 const MainNavigatorScreen = () => {
     return (

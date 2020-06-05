@@ -21,7 +21,7 @@ class Menu extends Component{
                     subtitle={item.description}
                     onPress={() => navigate('Dishdetail', { dishId: item.id })} 
                     leftAvatar={{ source: require('./images/uthappizza.png')}}
-                    />
+                />
             );
         };
 
@@ -32,7 +32,7 @@ class Menu extends Component{
                 data={this.state.dishes}
                 renderItem={renderMenuItem}
                 keyExtractor={item => item.id.toString()}
-                />
+            />
         );
     }
 }
