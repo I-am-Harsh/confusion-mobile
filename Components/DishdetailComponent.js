@@ -7,21 +7,20 @@ import { COMMENTS } from '../shared/comments';
 function RenderDish(props) {
 
     const dish = props.dish;
-    
-        if (dish != null) {
-            return(
-                <Card
+    if (dish != null) {
+        return(
+            <Card
                 featuredTitle={dish.name}
                 image={require('./images/uthappizza.png')}>
-                    <Text style={{margin: 10}}>
-                        {dish.description}
-                    </Text>
-                </Card>
-            );
-        }
-        else {
-            return(<View></View>);
-        }
+                <Text style={{margin: 10}}>
+                    {dish.description}
+                </Text>
+            </Card>
+        );
+    }
+    else {
+        return(<View></View>);
+    }
 }
 
 const RenderComment = (props) => {
@@ -45,8 +44,8 @@ const RenderComment = (props) => {
 
     return(
         <Card title='Comments'>
-            <FlatList data = {comments}
-                renderItem = {renderCommentItem}
+            <FlatList data = { comments }
+                renderItem = { renderCommentItem }
                 keyExtractor = {item => item.id.toString()}
             />
         </Card>
