@@ -27,17 +27,26 @@ const MenuNavigator = createStackNavigator();
 const MenuNavigatorScreen = () => {
     return (
         <MenuNavigator.Navigator
-            initialRouteName='Menu'
-            screenOptions={headerOptions}
+            initialRouteName = 'Menu'
+            screenOptions = {headerOptions}
         >
             <MenuNavigator.Screen
-                name="Menu"
-                component={Menu}
-            />
+                name = "Menu"
+                component = {Menu}
+                options={
+                    ({ navigation }) => ({ 
+                        headerLeft : <Icon name = 'menu' 
+                                size = {24} 
+                                color='White' 
+                                onPress = { () => navigation.toggleDrawer()} 
+                            />
+                    })
+                }
+                />
             <MenuNavigator.Screen
-                name="Dishdetail"
-                component={Dishdetail}
-                options={{ headerTitle: "Dish Detail" }}
+                name = "Dishdetail"
+                component = {Dishdetail}
+                options = {{ headerTitle: "Dish Detail" }}
             />
         </MenuNavigator.Navigator>
     );
@@ -53,8 +62,8 @@ const HomeNavigatorScreen = () => {
             {/* this is the screen header name */}
             {/* compoenent call */}
             <MenuNavigator.Screen
-                name="Home"
-                component={Home}
+                name = "Home"
+                component = {Home}
             />
         </HomeNavigator.Navigator>
     );
@@ -62,10 +71,9 @@ const HomeNavigatorScreen = () => {
 
 // about stack
 const AboutNavigator = createStackNavigator();
-
 const AboutNavigatorScreen  = () => {
     return(
-        <AboutNavigator.Navigator 
+        <AboutNavigator.Navigator
             screenOptions = {headerOptions}
         >
             <AboutNavigator.Screen
@@ -99,8 +107,8 @@ const MainNavigator = createDrawerNavigator();
 const MainNavigatorScreen = () => {
     return (
         <MainNavigator.Navigator
-            initialRouteName='Home'
-            drawerStyle={{
+            initialRouteName = 'Menu'
+            drawerStyle = {{
                 backgroundColor: '#D1C4E9'
             }}
         >
