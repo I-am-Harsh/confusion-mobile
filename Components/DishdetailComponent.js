@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, FlatList } from 'react-native';
 import { Card } from 'react-native-elements';
-
+import { postFavourites } from '../redux/ActionCreator';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 
 const mapStateToProps = state => {
     return {
       dishes: state.dishes,
-      comments: state.comments
+      comments: state.comments,
+      favourites : state.favourites
     }
   }
 
@@ -67,8 +68,8 @@ class DishDetail extends Component {
         return(
             <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
-                    favorite={this.state.favorites.some(el => el === dishId)}
-                    onPress={() => this.markFavorite(dishId)} 
+                    favourite={this.state.favourites.some(el => el === dishId)}
+                    onPress={() => this.markFavourite(dishId)} 
                     />
                 <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
             </ScrollView>

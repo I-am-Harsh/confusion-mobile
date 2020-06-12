@@ -3,6 +3,7 @@ import { View, Text, ScrollView } from 'react-native';
 import {Card} from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import Loading from './LoadingComponent';
 
 const mapStateToProps = state => {
     return {
@@ -14,27 +15,43 @@ const mapStateToProps = state => {
 }
 const RenderItem = (props) => {
     const item = props.item;
-    
-    if (item != null) {
+    if(props.isLoading){
         return(
-            <Card
-                featuredTitle={item.name}
-                featuredSubtitle={item.designation}
-                image={{uri: window.location.hostname+":9000/" + item.image}}>
-                <Text
-                    style={{margin: 10}}>
-                    {item.description}</Text>
-            </Card>
-        );
+            <Loading/>
+        );   
     }
-    else {
+    else if(props.errMess){        
         return(
-            <View>
+            <View style={{alignContent : 'center'}}>
                 <Text>
-                    {this.props.dishes.errMess}
+                    {props.errMess}
                 </Text>
             </View>
         );
+    }
+    else{
+        if (item != null) {
+            return(
+                <Card
+                    featuredTitle={item.name}
+                    featuredSubtitle={item.designation}
+                    image={{uri: window.location.hostname+":9000/" + item.image}}>
+                    <Text
+                        style={{margin: 10}}>
+                        {item.description}
+                    </Text>
+                </Card>
+            );
+        }
+        else {
+            return(
+                <View>
+                    <Text>
+                        There is nothing to show at the moment.
+                    </Text>
+                </View>
+            );
+        }
     }
 }
 
