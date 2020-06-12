@@ -1,14 +1,33 @@
 import React, { Component } from 'react';
 import { View, Platform, ScrollView, StyleSheet, Image, Text } from 'react-native';
-import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import { Icon } from 'react-native-elements';
 import Home from './HomeComponent';
 import Menu from './MenuComponent';
-import Dishdetail from './DishdetailComponent';
+import DishDetail from './DishdetailComponent';
 import About from './AboutComponent';
 import Contact from './ContactComponent';
+import { connect } from 'react-redux';
+import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreator';
+
+const mapStateToProps = state => {
+    return {
+      dishes: state.dishes,
+      comments: state.comments,
+      promotions: state.promotions,
+      leaders: state.leaders
+    }
+};
+  
+const mapDispatchToProps = dispatch => ({
+    fetchDishes: () => dispatch(fetchDishes()),
+    fetchComments: () => dispatch(fetchComments()),
+    fetchPromos: () => dispatch(fetchPromos()),
+    fetchLeaders: () => dispatch(fetchLeaders()),
+});
+
 
 
 // header options
@@ -53,8 +72,8 @@ const MenuNavigatorScreen = () => {
                 }
                 />
             <MenuNavigator.Screen
-                name = "Dishdetail"
-                component = {Dishdetail}
+                name = "DishDetail"
+                component = {DishDetail}
                 options = {{ headerTitle: "Dish Detail" }}
             />
         </MenuNavigator.Navigator>
@@ -243,6 +262,13 @@ const styles = StyleSheet.create({
 
 class Main extends Component {
 
+    componentDidMount() {
+        this.props.fetchDishes();
+        this.props.fetchComments();
+        this.props.fetchPromos();
+        this.props.fetchLeaders();
+    }
+
     render() {
         return (
             <NavigationContainer>
@@ -252,4 +278,4 @@ class Main extends Component {
     }
 }
 
-export default Main;
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
