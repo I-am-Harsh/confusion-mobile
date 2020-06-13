@@ -11,7 +11,7 @@ const mapStateToProps = state => {
     }
 }
 
-const History = () => {
+const History = (props) => {
     return(
         <View>
             <Card title='Our History'>
@@ -27,11 +27,11 @@ const History = () => {
             </Card>
             <Card title='Corporate Leadership'>
                 {
-                    this.props.leaders.leaders.map((leader, index) => {
+                    props.leaders.leaders.map((leader, index) => {
                         return(
                             <ListItem 
                                 key = {index}
-                                leftAvatar={{source: {uri: baseUrl + item.image}}}
+                                leftAvatar={{source: {uri: baseUrl + leader.image}}}
                                 title = {leader.name}
                             />
                         );
@@ -46,7 +46,7 @@ class About extends Component{
     render(){
         if(this.props.leaders.isLoading){
             return(
-                <History/>
+                <Loading/>
             );
         }
         else if(this.props.leaders.errMess){
@@ -59,8 +59,9 @@ class About extends Component{
             );
         }
         else{
+            console.log(this.props.leaders);
             return(
-                <History/>
+                <History leaders = {this.props.leaders}/>
             );
         }
     }

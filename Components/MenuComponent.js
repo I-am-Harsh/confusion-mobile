@@ -22,7 +22,7 @@ class Menu extends Component{
                     caption={item.description}
                     featured
                     onPress={() => navigate('DishDetail', { dishId: item.id })}
-                    imageSrc={{ uri: baseUrl + item.image}}
+                    imageSrc={{uri : baseUrl + item.image}}
                 />
             );
         };

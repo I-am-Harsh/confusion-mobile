@@ -65,13 +65,13 @@ class DishDetail extends Component {
 
     render() {
         const dishId = this.props.route.params.dishId;
+        // favourite={this.state.favourites.some(el => el === dishId)}
+        //             onPress={() => this.markFavourite(dishId)}
         return(
             <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
-                    favourite={this.state.favourites.some(el => el === dishId)}
-                    onPress={() => this.markFavourite(dishId)} 
                     />
-                <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
+                <RenderComment comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
             </ScrollView>
         );
     }
