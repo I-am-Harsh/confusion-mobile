@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import { Text, View, ScrollView, FlatList, StyleSheet, Modal, Button  } from 'react-native';
 import { Card, Icon, AirbnbRating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
-import { postFavorite, postComment } from '../redux/ActionCreator';
+import { postFavorite, postComment, deleteFavorite } from '../redux/ActionCreator';
 import { baseUrl } from '../shared/baseUrl';
 
 const mapStateToProps = state => {
@@ -15,7 +15,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
     postFavorite: (dishId) => dispatch(postFavorite(dishId)),
-    postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment))
+    postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
+    deleteFavorite : (dishId) => dispatch(deleteFavorite(dishId))
 });
 
 const style = StyleSheet.create({
@@ -39,6 +40,17 @@ const style = StyleSheet.create({
 
 function RenderDish(props) {
     const dish = props.dish;
+
+    const toggleFav = () => {
+        if(props.fav){
+            props.removeFav();
+        }
+        else{
+            props.markFav();
+        }
+    }
+
+
     if (dish != null) {
         return (
             <View>
@@ -61,7 +73,7 @@ function RenderDish(props) {
                             name={props.favorite ? 'heart' : 'heart-o'}
                             type='font-awesome'
                             color='#f50'
-                            onPress={() => props.toggleFav()}
+                            onPress={() => toggleFav()}
                         />
                         <Icon
                             reverse
@@ -157,14 +169,22 @@ class DishDetail extends Component {
         this.toggleFav();
     }
 
+    removeFav = () => {
+        const dishId = this.props.route.params.dishId;
+        this.props.deleteFavorite(dishId);
+        this.toggleFav();
+    }
+
     render() {
         const dishId = this.props.route.params.dishId;
         return (
             <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
-                    toggleFav={this.markFav}
+                    markFav={this.markFav}
                     favorite={this.state.favorite}
                     toggleModal = {this.toggleModal}
+                    removeFav = {this.removeFav}
+                    fav = {this.state.favorite}
                 />
                 <RenderComment comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
                 <Modal
