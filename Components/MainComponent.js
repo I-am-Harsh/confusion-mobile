@@ -11,6 +11,7 @@ import About from './AboutComponent';
 import Contact from './ContactComponent';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreator';
+import Reservation from './ReservationComponent';
 
 const mapStateToProps = state => {
     return {
@@ -59,7 +60,7 @@ const MenuNavigator = createStackNavigator();
 const MenuNavigatorScreen = () => {
     return (
         <MenuNavigator.Navigator
-            initialRouteName = 'Menu'
+            initialRouteName = "Menu"
             screenOptions = {headerOptions}
         >
             <MenuNavigator.Screen
@@ -144,13 +145,33 @@ const ContactNavigatorScreen  = () => {
     );
 }
 
+const ReservationNavigator = createStackNavigator();
+
+const ReservationNavigatorScreen = () => {
+    return(
+        <ReservationNavigator.Navigator
+            screenOptions = {headerOptions}
+        >
+            <ReservationNavigator.Screen
+                name = 'Reserve a Table'
+                component = {Reservation}
+                options = {
+                    ({navigation}) => ({
+                        headerLeft : () => <MenuIcon navigation = {navigation}/>
+                    })
+                }
+            />
+        </ReservationNavigator.Navigator>
+    );
+}
+
 // drawer
 // whole navigation
 const MainNavigator = createDrawerNavigator();
 function MainNavigatorScreen() {
     return(
         <MainNavigator.Navigator 
-            initialRouteName="Home"
+            initialRouteName = 'Menu'
             drawerStyle={{
                 backgroundColor:'#D1C4E9'
             }}
@@ -171,21 +192,7 @@ function MainNavigatorScreen() {
                 }}
             />
             <MainNavigator.Screen 
-                name="Contact Us" 
-                component={ContactNavigatorScreen}
-                options={{
-                    drawerIcon: ({tintColor}) => (
-                        <Icon
-                            name='address-card'
-                            type='font-awesome'
-                            size={22}
-                            color={tintColor}
-                        />
-                    )
-                }}                
-            />
-            <MainNavigator.Screen 
-                name="Menu"       
+                name = "Menu"       
                 component={MenuNavigatorScreen} 
                 options={{
                     drawerIcon: ({tintColor}) => (
@@ -193,6 +200,20 @@ function MainNavigatorScreen() {
                             name='list'
                             type='font-awesome'
                             size={24}
+                            color={tintColor}
+                        />
+                    )
+                }}                
+            />
+            <MainNavigator.Screen 
+                name="Contact Us" 
+                component={ContactNavigatorScreen}
+                options={{
+                    drawerIcon: ({tintColor}) => (
+                        <Icon
+                            name='address-card'
+                            type='font-awesome'
+                            size={21}
                             color={tintColor}
                         />
                     )
@@ -211,6 +232,20 @@ function MainNavigatorScreen() {
                         />
                     )
                 }}                
+            />
+            <MainNavigator.Screen 
+                name="Reserve a Table"
+                component={ReservationNavigatorScreen} 
+                options={{
+                    drawerIcon: ({tintColor}) => (
+                        <Icon
+                            name='home'
+                            type='font-awesome'
+                            size={24}
+                            color={tintColor}
+                        />
+                    )
+                }}
             />
         </MainNavigator.Navigator>
     );

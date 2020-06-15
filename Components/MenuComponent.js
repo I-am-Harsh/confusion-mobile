@@ -30,7 +30,9 @@ class Menu extends Component{
         const {navigate}  = this.props.navigation;
 
         if(this.props.dishes.isLoading){
-            <Loading/>
+            return(
+                <Loading/>
+            )
         }
         else if(this.props.dishes.errMess){
             return(
