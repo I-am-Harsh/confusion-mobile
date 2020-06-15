@@ -143,12 +143,6 @@ export const addLeaders = (leaders) => ({
     payload: leaders
 });
 
-export const postFavourites = (dishId) => {
-    setTimeout(() => {
-        dispatch(addFavourites(dishId));
-    })
-}
-
 export const postComment = (dishId, rating, author, comment) => (dispatch) => {
     
     const newComment = {
@@ -189,7 +183,11 @@ export const addComment = (comment) => ({
     payload: comment
 });
 
-export const addFavourites = (dishId) => ({
-    type: ActionTypes.ADD_FAVOURITES,
+export const postFavorite = (dishId)  => (dispatch) => {
+    dispatch(addFavorite(dishId));
+};
+
+export const addFavorite = (dishId) => ({
+    type: ActionTypes.ADD_FAVORITE,
     payload: dishId
-})
+});

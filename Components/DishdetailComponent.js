@@ -4,13 +4,12 @@ import { Card, Icon, AirbnbRating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { postFavorite, postComment } from '../redux/ActionCreator';
 import { baseUrl } from '../shared/baseUrl';
-import { Value } from 'react-native-reanimated';
 
 const mapStateToProps = state => {
     return {
         dishes: state.dishes,
         comments: state.comments,
-        favourites: state.favourites
+        favorites: state.favorites
     }
 }
 
@@ -122,6 +121,16 @@ class DishDetail extends Component {
         }
     }
 
+    componentDidMount(){
+        const dishId = this.props.route.params.dishId;
+        if(this.props.favorites.indexOf(dishId) >=0){
+            this.setState({
+                favorite : true
+            })
+        }
+        console.log(this.props.favorites);
+    }
+
     toggleModal = () => {
         this.setState({
             showModal : !this.state.showModal
@@ -142,15 +151,20 @@ class DishDetail extends Component {
         this.toggleModal();
     }
 
+    markFav = () => {
+        const dishId = this.props.route.params.dishId;
+        this.props.postFavorite(dishId);
+        this.toggleFav();
+    }
+
     render() {
         const dishId = this.props.route.params.dishId;
         return (
             <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
-                    toggleFav={this.toggleFav}
+                    toggleFav={this.markFav}
                     favorite={this.state.favorite}
                     toggleModal = {this.toggleModal}
-                    
                 />
                 <RenderComment comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
                 <Modal

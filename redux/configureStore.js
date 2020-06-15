@@ -4,7 +4,7 @@ import { dishes } from './dishes';
 import { comments } from './comments';
 import { promotions } from './promotions';
 import { leaders } from './leaders';
-import { favourites } from './favourites';
+import { favorites } from './favourites';
 
 export const ConfigureStore = () => {
     const store = createStore(
@@ -13,7 +13,7 @@ export const ConfigureStore = () => {
             comments,
             promotions,
             leaders,
-            favourites
+            favorites
         }),
         applyMiddleware(thunk)
     );
