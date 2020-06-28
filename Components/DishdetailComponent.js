@@ -1,9 +1,11 @@
 import React, { Component, useState } from 'react';
-import { Text, View, ScrollView, FlatList, StyleSheet, Modal, Button  } from 'react-native';
+import { Text, View, ScrollView, FlatList, Modal, StyleSheet, Button, Alert, PanResponder } from 'react-native';
 import { Card, Icon, AirbnbRating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { postFavorite, postComment, deleteFavorite } from '../redux/ActionCreator';
 import { baseUrl } from '../shared/baseUrl';
+import * as Animatable from 'react-native-animatable';
+
 
 const mapStateToProps = state => {
     return {
@@ -18,6 +20,8 @@ const mapDispatchToProps = dispatch => ({
     postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
     deleteFavorite : (dishId) => dispatch(deleteFavorite(dishId))
 });
+
+
 
 const style = StyleSheet.create({
     modal: {
@@ -42,6 +46,7 @@ function RenderDish(props) {
     const dish = props.dish;
 
     const toggleFav = () => {
+        console.log("Fav called", props.fav);
         if(props.fav){
             props.removeFav();
         }
@@ -50,10 +55,66 @@ function RenderDish(props) {
         }
     }
 
+    const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+        if ( dx < -200 )
+            return "add";
+        else if(dx < 100){
+            return "remove";
+        }
+        else
+            return false;
+    }
+
+    const panResponder = PanResponder.create({
+        onStartShouldSetPanResponder: (e, gestureState) => {
+            return true;
+        },
+        onPanResponderEnd: (e, gestureState) => {
+            const dragType = recognizeDrag(gestureState)
+            if (dragType === 'add')
+                Alert.alert(
+                    'Add Favorite',
+                    'Are you sure you wish to add ' + dish.name + ' to favorite?',
+                    [
+                        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                        {text: 'OK', onPress: () => toggleFav()},
+                    ],
+                    { cancelable: false }
+                );
+            else if(dragType === 'remove'){
+                console.log("Remove fav : ", props.fav);
+                if(props.fav){
+                    Alert.alert(
+                        'Remove Favorite',
+                        'Are you sure you wish to remove ' + dish.name + ' from favorite?',
+                        [
+                            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                            {text: 'OK', onPress: () => toggleFav()},
+                        ],
+                        { cancelable: false }
+                    );
+                }
+                else{
+                    Alert.alert(
+                        'Not a  Favorite',
+                        'Dish ' + dish.name + ' is not added to favourites',
+                        [
+                            {text: 'Ok', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
+                        ],
+                        { cancelable: false }
+                    );
+                }
+            }
+            return true;
+        }
+    })
+
 
     if (dish != null) {
         return (
-            <View>
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+                {...panResponder.panHandlers}
+            >
                 <Card
                     featuredTitle={dish.name}
                     image={{ uri: baseUrl + dish.image }}
@@ -84,7 +145,7 @@ function RenderDish(props) {
                         />
                     </View>
                 </Card>
-            </View>
+            </Animatable.View>
         );
     }
     else {
@@ -97,7 +158,7 @@ const RenderComment = (props) => {
 
     const renderCommentItem = ({ item, index }) => {
         return (
-            <View key={index} style={{ margin: 10 }}>
+            <ScrollView key={index} style={{ margin: 10 }}>
                 <Text style={{ fontSize: 14 }}>
                     {item.comment}
                 </Text>
@@ -107,17 +168,19 @@ const RenderComment = (props) => {
                 <Text style={{ fontSize: 12 }}>
                     {'---' + item.author}{' '}{item.date}
                 </Text>
-            </View>
+            </ScrollView>
         );
     }
 
     return (
-        <Card title='Comments'>
-            <FlatList data={comments}
-                renderItem={renderCommentItem}
-                keyExtractor={item => item.id.toString()}
-            />
-        </Card>
+        <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>        
+            <Card title='Comments'>
+                <FlatList data={comments}
+                    renderItem={renderCommentItem}
+                    keyExtractor={item => item.id.toString()}
+                />
+            </Card>
+        </Animatable.View>
     );
 }
 
@@ -140,7 +203,6 @@ class DishDetail extends Component {
                 favorite : true
             })
         }
-        console.log(this.props.favorites);
     }
 
     toggleModal = () => {
@@ -164,12 +226,14 @@ class DishDetail extends Component {
     }
 
     markFav = () => {
+        console.log("markFav called");
         const dishId = this.props.route.params.dishId;
         this.props.postFavorite(dishId);
         this.toggleFav();
     }
 
     removeFav = () => {
+        console.log("removing fav");
         const dishId = this.props.route.params.dishId;
         this.props.deleteFavorite(dishId);
         this.toggleFav();
@@ -178,7 +242,7 @@ class DishDetail extends Component {
     render() {
         const dishId = this.props.route.params.dishId;
         return (
-            <ScrollView>
+            <View>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
                     markFav={this.markFav}
                     favorite={this.state.favorite}
@@ -227,7 +291,7 @@ class DishDetail extends Component {
                         </View>
                     </View>
                 </Modal>
-            </ScrollView>
+            </View>
         );
     }
 }

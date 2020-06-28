@@ -196,7 +196,7 @@ const MainNavigator = createDrawerNavigator();
 function MainNavigatorScreen() {
     return(
         <MainNavigator.Navigator 
-            initialRouteName = 'Favourites'
+            initialRouteName = 'Menu'
             drawerStyle={{
                 backgroundColor:'#D1C4E9'
             }}

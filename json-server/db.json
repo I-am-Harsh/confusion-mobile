@@ -209,6 +209,14 @@
       "comment": "For",
       "date": "2020-06-14T19:27:10.467Z",
       "id": 20
+    },
+    {
+      "dishId": 0,
+      "rating": 5,
+      "author": "Harsh",
+      "comment": "Test comment 2",
+      "date": "2020-06-28T09:50:17.760Z",
+      "id": 21
     }
   ],
   "promotions": [
