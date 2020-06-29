@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { Text, View, ScrollView, FlatList, Modal, StyleSheet, Button, Alert, PanResponder } from 'react-native';
 import { Card, Icon, AirbnbRating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -153,12 +153,13 @@ function RenderDish(props) {
     }
 }
 
+
 const RenderComment = (props) => {
     const comments = props.comments
 
     const renderCommentItem = ({ item, index }) => {
         return (
-            <ScrollView key={index} style={{ margin: 10 }}>
+            <ScrollView key={index} style={{ margin: 10, flexGrow : 1 }} >
                 <Text style={{ fontSize: 14 }}>
                     {item.comment}
                 </Text>
@@ -173,11 +174,12 @@ const RenderComment = (props) => {
     }
 
     return (
-        <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>        
+        <Animatable.View animation="fadeInUp" duration={2000} delay={1000} style={{flexGrow : 1 }}>
             <Card title='Comments'>
                 <FlatList data={comments}
                     renderItem={renderCommentItem}
                     keyExtractor={item => item.id.toString()}
+                    style = {{flexGrow : 1}}
                 />
             </Card>
         </Animatable.View>
