@@ -1,2 +1,10 @@
-export const baseUrl = "http://192.168.55.101:8000/";
-// export const baseUrl = "http://192.168.43.185:8000/";
+import Constants from "expo-constants";
+const { manifest } = Constants;
+
+export const baseUrl = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+  ? "http://" + manifest.debuggerHost.split(`:`).shift().concat(`:8000/`)
+  : `api.example.com`;
+
+console.log("Base URL : ",baseUrl);
+
+

@@ -1,6 +1,6 @@
 import {createStore, applyMiddleware} from 'redux';
 import {persistStore, persistCombineReducers} from 'redux-persist';
-import storage from 'redux-persist/es/storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import thunk from 'redux-thunk';
 import { dishes } from './dishes';
 import { comments } from './comments';
@@ -10,7 +10,7 @@ import { favorites } from './favourites';
 
 const config = {
     key: 'root',
-    storage,
+    storage : AsyncStorage,
     debug: true
 }
 
@@ -26,6 +26,7 @@ export const ConfigureStore = () => {
         applyMiddleware(thunk)
     );
 
-    const persistor = persistStore(store);
+    const persistor = persistStore(store)
     return { persistor, store };
 }
+

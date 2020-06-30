@@ -58,8 +58,8 @@ function RenderDish(props) {
     const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
         if ( dx < -200 )
             return "add";
-        else if(dx < 100){
-            return "remove";
+        else if(dx > 200){
+            return "comment";
         }
         else
             return false;
@@ -73,37 +73,17 @@ function RenderDish(props) {
             const dragType = recognizeDrag(gestureState)
             if (dragType === 'add')
                 Alert.alert(
-                    'Add Favorite',
-                    'Are you sure you wish to add ' + dish.name + ' to favorite?',
+                    `${props.fav ? "Remove Favourite" : 'Add Favourite'}`,
+                    `Are you sure you wish to ${props.fav ? 'Remove' : 'Add'} ${dish.name} ${props.fav ? 'from' : 'to'} favorite?`,
                     [
                         {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
                         {text: 'OK', onPress: () => toggleFav()},
                     ],
                     { cancelable: false }
                 );
-            else if(dragType === 'remove'){
-                console.log("Remove fav : ", props.fav);
-                if(props.fav){
-                    Alert.alert(
-                        'Remove Favorite',
-                        'Are you sure you wish to remove ' + dish.name + ' from favorite?',
-                        [
-                            {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-                            {text: 'OK', onPress: () => toggleFav()},
-                        ],
-                        { cancelable: false }
-                    );
-                }
-                else{
-                    Alert.alert(
-                        'Not a  Favorite',
-                        'Dish ' + dish.name + ' is not added to favourites',
-                        [
-                            {text: 'Ok', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
-                        ],
-                        { cancelable: false }
-                    );
-                }
+            else if(dragType === 'comment'){
+                console.log("Comment : ", props.fav);
+                props.toggleModal();
             }
             return true;
         }
@@ -159,29 +139,29 @@ const RenderComment = (props) => {
 
     const renderCommentItem = ({ item, index }) => {
         return (
-            <ScrollView key={index} style={{ margin: 10, flexGrow : 1 }} >
+            <View key={index} style={{ margin: 10}} >
                 <Text style={{ fontSize: 14 }}>
-                    {item.comment}
+                    {item.comment} 
                 </Text>
                 <Text style={{ fontSize: 12 }}>
-                    {item.rating}
+                    {item.rating} Stars
                 </Text>
                 <Text style={{ fontSize: 12 }}>
                     {'---' + item.author}{' '}{item.date}
                 </Text>
-            </ScrollView>
+            </View>
         );
     }
 
     return (
         <Animatable.View animation="fadeInUp" duration={2000} delay={1000} style={{flexGrow : 1 }}>
-            <Card title='Comments'>
-                <FlatList data={comments}
-                    renderItem={renderCommentItem}
-                    keyExtractor={item => item.id.toString()}
-                    style = {{flexGrow : 1}}
-                />
-            </Card>
+                <Card title='Comments'>
+                    <FlatList data={comments}
+                        renderItem={renderCommentItem}
+                        keyExtractor={item => item.id.toString()}
+                        style = {{flexGrow : 1}}
+                    />
+                </Card>
         </Animatable.View>
     );
 }
@@ -244,7 +224,7 @@ class DishDetail extends Component {
     render() {
         const dishId = this.props.route.params.dishId;
         return (
-            <View>
+            <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
                     markFav={this.markFav}
                     favorite={this.state.favorite}
@@ -293,7 +273,7 @@ class DishDetail extends Component {
                         </View>
                     </View>
                 </Modal>
-            </View>
+            </ScrollView>
         );
     }
 }
