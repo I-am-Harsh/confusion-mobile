@@ -13,6 +13,7 @@ import Reservation from './ReservationComponent';
 import FavComponent from './FavouriteComponent';
 import { connect } from 'react-redux';
 import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreator';
+import Login from './LoginComponent';
 
 
 const mapStateToProps = state => {
@@ -190,13 +191,33 @@ const FavoriteNavigatorScreen = () => {
     );
 }
 
+const LoginNavigator = new createStackNavigator();
+const LoginNavigatorScreen = () => {
+    return(
+        <LoginNavigator.Navigator
+            screenOptions = {headerOptions}
+        >
+            <LoginNavigator.Screen
+                name = 'Login'
+                component = {Login}
+                options = {
+                    ({navigation}) => ({
+                        headerLeft : () => <MenuIcon navigation = {navigation}/>
+                    })
+                }
+            >
+            </LoginNavigator.Screen>
+        </LoginNavigator.Navigator>
+    );
+}
+
 // drawer
 // whole navigation
 const MainNavigator = createDrawerNavigator();
 function MainNavigatorScreen() {
     return(
         <MainNavigator.Navigator 
-            initialRouteName = 'Menu'
+            initialRouteName = 'Reserve a Table'
             drawerStyle={{
                 backgroundColor:'#D1C4E9'
             }}
@@ -223,6 +244,20 @@ function MainNavigatorScreen() {
                     drawerIcon: ({tintColor}) => (
                         <Icon
                             name='list'
+                            type='font-awesome'
+                            size={24}
+                            color={tintColor}
+                        />
+                    )
+                }}                
+            />
+            <MainNavigator.Screen
+                name = 'Login'
+                component = {LoginNavigatorScreen}
+                options={{
+                    drawerIcon: ({tintColor}) => (
+                        <Icon
+                            name='sign-in'
                             type='font-awesome'
                             size={24}
                             color={tintColor}

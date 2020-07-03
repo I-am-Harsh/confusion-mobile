@@ -5,6 +5,5 @@ export const baseUrl = (typeof manifest.packagerOpts === `object`) && manifest.p
   ? "http://" + manifest.debuggerHost.split(`:`).shift().concat(`:8000/`)
   : `api.example.com`;
 
-console.log("Base URL : ",baseUrl);
 
 
