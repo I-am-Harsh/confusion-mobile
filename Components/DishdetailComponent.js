@@ -46,7 +46,6 @@ function RenderDish(props) {
     const dish = props.dish;
 
     const toggleFav = () => {
-        console.log("Fav called", props.fav);
         if(props.fav){
             props.removeFav();
         }
@@ -82,7 +81,6 @@ function RenderDish(props) {
                     { cancelable: false }
                 );
             else if(dragType === 'comment'){
-                console.log("Comment : ", props.fav);
                 props.toggleModal();
             }
             return true;
@@ -218,22 +216,17 @@ class DishDetail extends Component {
     }
 
     submitComment = (dishId) => {
-        console.log('posted');
-        console.log(dishId);
-        console.log(this.state.comment);
         this.props.postComment(dishId, this.state.rating, this.state.author, this.state.comment)
         this.toggleModal();
     }
 
     markFav = () => {
-        console.log("markFav called");
         const dishId = this.props.route.params.dishId;
         this.props.postFavorite(dishId);
         this.toggleFav();
     }
 
     removeFav = () => {
-        console.log("removing fav");
         const dishId = this.props.route.params.dishId;
         this.props.deleteFavorite(dishId);
         this.toggleFav();

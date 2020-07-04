@@ -65,7 +65,6 @@ class About extends Component{
             );
         }
         else{
-            console.log(this.props.leaders);
             return(
                 <ScrollView>
                     <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
