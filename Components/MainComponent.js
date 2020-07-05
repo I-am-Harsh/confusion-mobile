@@ -221,7 +221,7 @@ function MainNavigatorScreen() {
 
     return(
         <MainNavigator.Navigator 
-            initialRouteName = 'Login'
+            initialRouteName = 'Reserve a Table'
             drawerStyle={{
                 backgroundColor:'#D1C4E9'
             }}
@@ -375,25 +375,20 @@ const styles = StyleSheet.create({
 
 class Main extends Component {
 
-    componentDidMount() {
+    componentDidMount = () =>{
         this.props.fetchDishes();
         this.props.fetchComments();
         this.props.fetchPromos();
         this.props.fetchLeaders();
-
-        NetInfo.fetch()
-        .then(result => {
-            if(Platform.OS !== 'ios')
-            {
-                ToastAndroid.show(`Connected to server : ${result.type}`, ToastAndroid.LONG);
-            }
-        })
-        NetInfo.addEventListener(connectionChange => this.handleConnectivityChange(connectionChange))
-        // unsubscribe();
-        
+        // this.unsub();
     }
+    // unsub = NetInfo.addEventListener(connectionChange => this.handleConnectivityChange(connectionChange));
 
-
+    componentWillUnmount(){
+        console.log('unmount');
+        // this.unsub();
+    }
+    
     handleConnectivityChange = (connectionInfo) => {
         console.log('handleConnection called');
         if(Platform.OS !== 'ios'){

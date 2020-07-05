@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, ScrollView, ToastAndroid, Platform } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Text,ToastAndroid, Platform } from 'react-native';
 import { Card, Button, Input, CheckBox, Icon } from 'react-native-elements';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import { Camera } from 'expo-camera';
-import { NavigationContainer } from '@react-navigation/native';
+import * as ImageManipulator from "expo-image-manipulator";
 import baseUrl from '../shared/baseUrl';
+
 
 
 class LoginTab extends Component {
@@ -48,6 +48,7 @@ class LoginTab extends Component {
         // this.props.navigation.navigate('Register');
         // this.props.navigation.navigate('Register')
         // console.log(this.props.navigation.navigate('MainNavigatorScreen',{},Navigation));
+        this.props.navigation.navigate('Menu');
         
 
     }
@@ -68,6 +69,7 @@ class LoginTab extends Component {
                     onChangeText={(password) => this.setState({ password })}
                     value={this.state.password}
                     containerStyle={styles.formInput}
+                    secureTextEntry
                 />
                 <CheckBox title="Remember Me"
                     center
@@ -77,7 +79,7 @@ class LoginTab extends Component {
                 />
                 <View style={styles.formButton}>
                     <Button
-                        onPress={() => this.handleLogin()}
+                        onPress={() => {this.handleLogin()}}
                         title="Login"
                         type='solid'
                     />
@@ -93,6 +95,7 @@ class LoginTab extends Component {
                                 type='font-awesome'
                                 size={24}
                                 color='blue'
+                                style = {{marginRight : 10}}
                             />
                         }
                         titleStyle={{
@@ -101,6 +104,7 @@ class LoginTab extends Component {
                     />
                 </View>
             </View>
+            
         );
     }
 
@@ -120,10 +124,20 @@ class RegisterTab extends Component {
         }
     }
 
+    saveAsPng = async (image) => {
+        const newImage = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [
+                {resize: {width: 400}}
+            ],
+            {format: 'png'}
+        );
+        this.setState({ imageUrl: newImage.uri });
+    }
+
     getImageFromCamera = async () => {
         const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
         const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
         if (cameraPermission.status === 'granted' && cameraRollPermission.status === 'granted') {
             let capturedImage = await ImagePicker.launchCameraAsync({
                 allowsEditing: true,
@@ -131,7 +145,25 @@ class RegisterTab extends Component {
             });
             if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                this.setState({ imageUrl: capturedImage.uri });
+                this.saveAsPng(capturedImage);
+                
+            }
+        }
+    }
+
+    getImageFromGallery = async () => {
+        const galleryPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if(galleryPermission.status === 'granted'){
+            const selectedImage = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing : true,
+                aspect : [4,3]
+            });
+            if(!selectedImage.cancelled){
+                console.log('Image picked');
+                this.saveAsPng(selectedImage);
+                // this.setState({
+                //     imageUrl : selectedImage.uri
+                // })
             }
         }
     }
@@ -141,6 +173,10 @@ class RegisterTab extends Component {
         if (this.state.remember)
             SecureStore.setItemAsync('userinfo', JSON.stringify({ username: this.state.username, password: this.state.password }))
                 .catch((error) => console.log('Could not save user info', error));
+        
+        if(Platform.OS !== 'ios'){
+            ToastAndroid.show("Success", ToastAndroid.LONG);
+        }
     }
 
     render() {
@@ -153,9 +189,15 @@ class RegisterTab extends Component {
                             loadingIndicatorSource={require('./images/logo.png')}
                             style={styles.image}
                         />
+                        <View style = {{marginRight : 5}}>
+                            <Button
+                                title="Camera"
+                                onPress={this.getImageFromCamera}
+                            />
+                        </View>
                         <Button
-                            title="Camera"
-                            onPress={this.getImageFromCamera}
+                            title="Gallery"
+                            onPress={this.getImageFromGallery}
                         />
                     </View>
                     <Input
@@ -209,6 +251,7 @@ class RegisterTab extends Component {
                                     type='font-awesome'
                                     size={24}
                                     color='white'
+                                    style = {{marginRight : 10}}
                                 />
                             }
                             buttonStyle={{
@@ -234,7 +277,7 @@ const styles = StyleSheet.create({
         margin: 0
     },
     formCheckbox: {
-        margin: 40,
+        margin: 20,
         backgroundColor: "transparent",
         borderColor: "transparent"
     },
@@ -244,7 +287,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         flexDirection: 'row',
-        margin: 20
+        marginTop : 20
     },
     image: {
         margin: 10,
@@ -259,9 +302,7 @@ const Login = () => {
     // const toMenu = this.props.navigation.navigate('Menu');
 
     return(
-        <NavigationContainer
-            independent = {true}
-        >
+        
            <TabNavigator.Navigator
             initialRouteName = 'LoginTab'
             tabBarOptions = {{
@@ -304,7 +345,7 @@ const Login = () => {
                >
                </TabNavigator.Screen>
            </TabNavigator.Navigator>
-        </NavigationContainer>
+        
     );
 }
 

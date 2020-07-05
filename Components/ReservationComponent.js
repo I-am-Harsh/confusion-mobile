@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Picker, Switch, Button, Alert } from 'react-native';
+import { Text, View, StyleSheet, Picker, Switch, Button, Alert, Platform, ToastAndroid } from 'react-native';
 import DatePicker from 'react-native-datepicker'
 import * as Animatable from 'react-native-animatable';
 import * as Permissions from 'expo-permissions';
 import { Notifications } from 'expo'
+import * as Calendar from 'expo-calendar';
+import * as Localization from 'expo-localization';
+
 // import * as Notifications from 'expo-notifications';
 
 
@@ -25,13 +28,56 @@ class Reservation extends Component {
     }
 
     okPress = () => {
-
+        // this.presentLocalNotification(this.state.date);       
+        this.addReservationToCalendar();
         this.resetForm();
-        this.presentLocalNotification(this.state.date);
+    }
+
+    async addReservationToCalendar(){
+
+        const startDate = new Date(Date.parse(this.state.date))
+        const endDate = new Date(Date.parse(this.state.date) + 2*60*60*1000)
+        
+        // console.log("State :", this.state.date);
+        // console.log("Start date : ",startDate);
+        // console.log("End Date", endDate)
+        // console.log(Localization.timezone);
+
+        if(Platform.OS === 'android'){
+            const defaultCalendar = await Calendar.getCalendarsAsync();
+            // console.log("Default : ",defaultCalendar);
+            Calendar.createEventAsync(defaultCalendar[0].id,{
+                title : 'Confusion Restaurant',
+                startDate : startDate,
+                endDate : endDate,
+                timeZone : Localization.timezone,
+                location : '121 Clear Water Bay Road'
+            })
+        }
+        else if(Platform.OS === 'ios'){
+            const defaultCalendar = await Calendar.getDefaultCalendarAsync();
+            Calendar.createEventAsync(defaultCalendar.id,{
+                title : 'Confusion Restaurant',
+                startDate : startDate,
+                endDate : endDate,
+                timeZone : Localization.timezone,
+                location : '121 Clear Water Bay Road'
+            })
+            .catch(err => console.log(err))
+            Calendar.createReminderAsync(null, {
+                title : 'Confusion Restaurant',
+                startDate : startDate,
+                endDate : endDate,
+                timeZone : Localization.timezone,
+                location : '121 Clear Water Bay Road'
+            })
+            .catch(err => console.log(err))
+
+        }
     }
 
     handleReservation() {
-        console.log(JSON.stringify(this.state));
+        // console.log(JSON.stringify(this.state));
         // this.toggleModal();
         Alert.alert(
             "Confirm Details",
@@ -89,6 +135,19 @@ class Reservation extends Component {
         });
     }
 
+    async componentDidMount(){
+        if(Platform.OS === 'android'){
+            const calendar = Permissions.askAsync(Permissions.CALENDAR);
+        }
+        else if(Platform.OS === 'ios'){
+            const Reminder = await Permissions.askAsync(Permissions.REMINDERS);
+            const Calendar = await Permissions.askAsync(Permissions.CALENDAR);
+        }
+        // const defaultCalendar = await Calendar.getDefaultCalendarAsync();
+        // console.log(defaultCalendar.id);
+    }
+
+    
 
 
     render() {
